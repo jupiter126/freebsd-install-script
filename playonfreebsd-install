@@ -1,10 +1,10 @@
 #/bin/sh
 
-echo "dbus_enable=\"YES\"" >> /etc/rc.conf
-echo "hald_enable=\"YES\"" >> /etc/rc.conf
-#echo "kld_list=\"nvidia"" >> /etc/rc.conf
-echo "kdm4_enable=\"YES\"" >> /etc/rc.conf
-echo "linux_enable=\"YES\"" >> /etc/rc.conf
+echo 'dbus_enable="YES"' >> /etc/rc.conf
+echo 'hald_enable="YES"' >> /etc/rc.conf
+#echo 'kld_list="nvidia"' >> /etc/rc.conf
+echo 'kdm4_enable="YES"' >> /etc/rc.conf
+echo 'linux_enable="YES"' >> /etc/rc.conf
 
 
 echo "kern.ipc.shm_allow_removed=1" >> /etc/sysctl.conf
