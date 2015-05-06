@@ -10,7 +10,7 @@ echo 'linux_enable="YES"' >> /etc/rc.conf
 echo "kern.ipc.shm_allow_removed=1" >> /etc/sysctl.conf
 #hw.snd.default_unit=8
 
-pkg install nano xorg kde chromium yakuake-kde4 htop git wine bash py27-wxPython-common py27-wxPython30 cabextract wget icoutils p7zip gsed 
+pkg install nano xorg kde chromium yakuake-kde4 htop git wine bash py27-wxPython-common py27-wxPython30 cabextract wget icoutils p7zip gsed mesa-demos
 echo "linproc /compat/linux/proc linprocfs rw,late 0 0" >> /etc/fstab
 echo "fdesc /dev/fd fdescfs rw 0 0" >> /etc/fstab
 mkdir  -p /usr/compat/linux/proc ; ln -s /usr/compat /compat ; mount linproc
