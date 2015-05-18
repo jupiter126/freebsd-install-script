@@ -2,17 +2,88 @@
 
 echo 'dbus_enable="YES"' >> /etc/rc.conf
 echo 'hald_enable="YES"' >> /etc/rc.conf
-#echo 'kld_list="nvidia"' >> /etc/rc.conf
 echo 'kdm4_enable="YES"' >> /etc/rc.conf
 echo 'linux_enable="YES"' >> /etc/rc.conf
+hw.snd.default_unit=8
 
+pkg install nano xorg kde chromium yakuake-kde4 htop git wine-devel bash py27-wxPython-common py27-wxPython30 cabextract wget icoutils p7zip gsed mesa-demos mplayer libreoffice zip rar hexchat rsync smartmontools gimp inkscape conky feh conkyforecast
 
+###### few tweaks from kern.ipc.shm_allow_removed=1 #####
+# Enhance shared memory X11 interface
+echo 'kern.ipc.shmmax=67108864' >> /etc/sysctl.conf
+echo 'kern.ipc.shmall=32768' >> /etc/sysctl.conf
+# Enhance desktop responsiveness under high CPU use (200/224)
+echo 'kern.sched.preempt_thresh=224' >> /etc/sysctl.conf
+# Bump up maximum number of open files
+echo 'kern.maxfiles=200000' >> /etc/sysctl.conf
+# Disable PC Speaker
+echo 'hw.syscons.bell=0' >> /etc/sysctl.conf
+# Shared memory for Chromium
 echo "kern.ipc.shm_allow_removed=1" >> /etc/sysctl.conf
-#hw.snd.default_unit=8
+#beastie logo on boot
+echo 'loader_logo="beastie"' >> /boot/loader.conf
+# Boot-time kernel tuning
+echo 'kern.ipc.shmseg=1024' >> /boot/loader.conf
+echo 'kern.ipc.shmmni=1024' >> /boot/loader.conf
+echo 'kern.maxproc=10000' >> /boot/loader.conf
+# Load MMC/SD card-reader support
+echo 'mmc_load="YES"' >> /boot/loader.conf
+echo 'mmcsd_load="YES"' >> /boot/loader.conf
+echo 'sdhci_load="YES"' >> /boot/loader.conf
+# Filesystems in Userspace
+echo 'fuse_load="YES"' >> /boot/loader.conf
+# Intel Core thermal sensors
+echo 'coretemp_load="YES"' >> /boot/loader.conf
+# In-memory filesystems
+echo 'tmpfs_load="YES"' >> /boot/loader.conf
+# Asynchronous I/O
+echo 'aio_load="YES"' >> /boot/loader.conf
+# Handle Unicode on removable media
+echo 'libiconv_load="YES"' >> /boot/loader.conf
+echo 'libmchain_load="YES"' >> /boot/loader.conf
+echo 'cd9660_iconv_load="YES"' >> /boot/loader.conf
+echo 'msdosfs_iconv_load="YES"' >> /boot/loader.conf
+#########################################################
 
-pkg install nano xorg kde chromium yakuake-kde4 htop git wine bash py27-wxPython-common py27-wxPython30 cabextract wget icoutils p7zip gsed mesa-demos
 echo "linproc /compat/linux/proc linprocfs rw,late 0 0" >> /etc/fstab
 echo "fdesc /dev/fd fdescfs rw 0 0" >> /etc/fstab
 mkdir  -p /usr/compat/linux/proc ; ln -s /usr/compat /compat ; mount linproc
 
-git clone https://github.com/PlayOnLinux/POL-POM-4
+#nvidia - uncomment if needed
+echo 'kld_list="nvidia"' >> /etc/rc.conf
+echo 'nvidia_load="YES"' >> /boot/loader.conf
+echo 'hint.agp.0.disabled="1"' >> /boot/device.hints
+pkg install nvidia-driver nvidia-settings nvidia-texture-tools nvidia-xconfig
+nvidia-xconfig
+echo 'Section "Module"'>> /etc/X11/xorg.conf
+echo '    Load           "freetype"'>> /etc/X11/xorg.conf
+echo '    Load           "bitmap"'>> /etc/X11/xorg.conf
+echo '    Load           "type1"'>> /etc/X11/xorg.conf
+echo '    Load           "glx"'>> /etc/X11/xorg.conf
+echo 'EndSection'>> /etc/X11/xorg.conf
+
+#User settings
+echo "Configure a user (y/n)?"
+read usrad
+while [ "$usrad" = "y" ];do
+        echo "what is the username"
+        read usrnam
+        echo "usrnam is $usrnam"
+        if [ -d /home/$usrnam ];then
+                echo "username found, creating local config"
+                echo "sleep 1 && feh --bg-center ~/background.jpg &" >> /home/$usrnam/.xinitrc
+		cp /usr/local/share/nano/xml.nanorc /home/$usrnam/.nanorc
+                # Dev said POLPOM4 bsd support not maintained, should wait for POLPOM5
+		cd /home/$usrnam && git clone https://github.com/PlayOnLinux/POL-POM-4 && chown -R usrnam:usrnam POL-POM-4
+        else
+                echo "username not found"
+        fi
+        echo "Configure another user (y/n)?"
+        read usrad
+done
+
+
+####################### lol
+pkg install base64 openssl aescrypt mcrypt ccrypt gsed 
+#perl crypto stuff
+#pkg install p5-Crypt-Anubis p5-Crypt-AppleTwoFish p5-Crypt-Blowfish p5-Crypt-Blowfish_PP p5-Crypt-CAST5 p5-Crypt-CAST5_PP p5-Crypt-CBC p5-Crypt-CBCeasy p5-Crypt-CFB p5-Crypt-Caesar p5-Crypt-Camellia_PP p5-Crypt-Chimera p5-Crypt-CipherSaber p5-Crypt-Cracklib p5-Crypt-Ctr p5-Crypt-DES p5-Crypt-DES_EDE3 p5-Crypt-DES_PP p5-Crypt-DH p5-Crypt-DH-GMP p5-Crypt-DSA p5-Crypt-Dining p5-Crypt-ECB p5-Crypt-Eksblowfish p5-Crypt-Enigma p5-Crypt-GCrypt p5-Crypt-GOST p5-Crypt-GOST p5-Crypt-GPG p5-Crypt-GeneratePassword p5-Crypt-HCE_MD5 p5-Crypt-HCE_SHA p5-Crypt-IDEA p5-Crypt-Imail p5-Crypt-Juniper p5-Crypt-Khazad p5-Crypt-License p5-Crypt-Lite p5-Crypt-Loki97 p5-Crypt-MySQL p5-Crypt-NULL p5-Crypt-OFB p5-Crypt-OICQ p5-Crypt-OTP p5-Crypt-OpenPGP p5-Crypt-OpenSSL-AES p5-Crypt-OpenSSL-Bignum p5-Crypt-OpenSSL-CA p5-Crypt-OpenSSL-DSA p5-Crypt-OpenSSL-EC p5-Crypt-OpenSSL-ECDSA p5-Crypt-OpenSSL-RSA p5-Crypt-OpenSSL-Random p5-Crypt-OpenSSL-X509 p5-Crypt-PBKDF2 p5-Crypt-PGPSimple p5-Crypt-PassGen p5-Crypt-Passwd-XS p5-Crypt-PasswdMD5 p5-Crypt-Password-Util p5-Crypt-Primes p5-Crypt-RC4 p5-Crypt-RC5 p5-Crypt-RC6 p5-Crypt-RHash p5-Crypt-RIPEMD160 p5-Crypt-RSA p5-Crypt-RSA-Yandex p5-Crypt-Rabbit p5-Crypt-RandPasswd p5-Crypt-Random p5-Crypt-Random-Source p5-Crypt-Rijndael p5-Crypt-Rijndael_PP p5-Crypt-SKey p5-Crypt-SMIME p5-Crypt-SSLeay p5-Crypt-Salt p5-Crypt-SaltedHash p5-Crypt-Serpent p5-Crypt-Shark p5-Crypt-Simple p5-Crypt-SmbHash p5-Crypt-Sodium p5-Crypt-Solitaire p5-Crypt-TEA p5-Crypt-Tea_JS p5-Crypt-TripleDES p5-Crypt-Twofish p5-Crypt-Twofish2 p5-Crypt-Twofish_PP p5-Crypt-URandom p5-Crypt-UnixCrypt p5-Crypt-UnixCrypt_XS p5-Crypt-X509 p5-Crypt-xDBM_File p5-CryptX
